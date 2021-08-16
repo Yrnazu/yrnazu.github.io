@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>about</title>
+    <url>/2021/08/16/about/</url>
+    <content><![CDATA[<p>欢迎访问我的博客。这个博客主要是记录一些我喜欢的内容，还有项目技术细节等等。<br>希望你能在我的博客里找到你想要的东西，祝生活愉快。  </p>
+<p>Yrnazu<br>2021/08/16  </p>
+]]></content>
+  </entry>
+  <entry>
+    <title>有关于拉东变换的简单应用</title>
+    <url>/2021/08/16/%E6%9C%89%E5%85%B3%E4%BA%8E%E6%8B%89%E4%B8%9C%E5%8F%98%E6%8D%A2%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h2><p>拉东变换(Radon Transform)，简单来说即是对一个平面上的线A进行积分，从而转换为一个点。而其逆运算，即逆拉东变换则是将得出的结果再还原为原先的线。</p>
+<p>该数学变换如今在医学成像得到了广泛的应用(如计算机断层扫描)。  </p>
+<h2 id="实际运用"><a href="#实际运用" class="headerlink" title="实际运用"></a>实际运用</h2><p>下图为计算机断层扫描仪(简称’CT机’)的扫描部分结构图。<br><img src="1.jpg"><br>CC BY-SA 3.0, <a href="https://commons.wikimedia.org/w/index.php?curid=1664367">https://commons.wikimedia.org/w/index.php?curid=1664367</a>  </p>
+<p>图中的T所指部分为X光管，通过其发射X光穿透人体并被D所指部分，即X光探测器所接收。而最终X光探测器测得的仅是透过整个被扫描部位的X光强度。而这个过程可视作进行了一次拉东变换。<br>通过朗伯-比尔定律(Lambert-Beer law)，我们可以得知一个部位的吸光强度与其密度有关。<br>因此，对得到的数据做一次逆拉东变换，即可得到各部位的密度，从而输出一张扫描部位的密度图。</p>
+<p>下面为其简单应用的Matlab代码。  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">P = phantom(&#x27;Modified Shepp-Logan&#x27;,4096);  </span><br><span class="line"></span><br><span class="line">theta0 = 0:45:145;  </span><br><span class="line">theta1 = 0:20:160;  </span><br><span class="line">theta2 = 0:1:179;  </span><br><span class="line"></span><br><span class="line">R0 = radon(P,theta0);  </span><br><span class="line">R1 = radon(P,theta1);  </span><br><span class="line">R2 = radon(P,theta2);  </span><br><span class="line"></span><br><span class="line">I0 = iradon(R0,45);  </span><br><span class="line">I1 = iradon(R1,20);  </span><br><span class="line">I2 = iradon(R2,1);  </span><br><span class="line"></span><br><span class="line">figure;  </span><br><span class="line">subplot(3,2,1),imshow(P)  </span><br><span class="line">title(&#x27;(a)Shepp-Logan head phantom image&#x27;)  </span><br><span class="line"></span><br><span class="line">subplot(3,2,2),imshow(I0)  </span><br><span class="line">title(&#x27;(b)Backprojection from 4 projections&#x27;);  </span><br><span class="line"></span><br><span class="line">subplot(3,2,3),imshow(I1)  </span><br><span class="line">title(&#x27;(c)Backprojection from 90 projections&#x27;);  </span><br><span class="line"></span><br><span class="line">subplot(3,2,4),imshow(I2)  </span><br><span class="line">title(&#x27;(d)Backprojection from 180 projections&#x27;);  </span><br></pre></td></tr></table></figure>
+<p>图像输出如下:<br><img src="2.jpg"></p>
+<p>在这串代码里，我们使用了Matlab内的phantom函数生成了一张经典的Shepp-Logan图，随后通过radon()函数模拟X光管对其进行了三次拉东变换。<br>再通过iradon()函数对其进行逆拉东变换后，即可得其模拟成像。  </p>
+]]></content>
+  </entry>
+</search>
